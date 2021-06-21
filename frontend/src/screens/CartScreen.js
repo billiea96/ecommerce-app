@@ -11,7 +11,7 @@ export default function CartScreen(props) {
     // const qty = props.location.search ? Number(props.location.search.split('=')[1]) : 1;
     const qty = params.get('qty');
     const cart = useSelector(state => state.cart);
-    const {cartItems} = cart;
+    const { cartItems } = cart;
     const dispatch = useDispatch();
     useEffect(() => {
         if (productId) {
@@ -42,26 +42,26 @@ export default function CartScreen(props) {
                                 <li key={item.product}>
                                     <div className="row">
                                         <div>
-                                            <img 
+                                            <img
                                                 className="small"
-                                                src={item.image} 
-                                                alt={item.name} 
+                                                src={item.image}
+                                                alt={item.name}
                                             />
                                         </div>
                                         <div className="min-30">
-                                            <Link to={`product/${item.product}`}>{item.name}</Link>
+                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
                                         </div>
-                                        <div> 
-                                            <select 
-                                                value={item.qty} 
-                                                onChange={(e) => 
+                                        <div>
+                                            <select
+                                                value={item.qty}
+                                                onChange={(e) =>
                                                     dispatch(
                                                         addToCart(item.product, Number(e.target.value))
                                                     )
                                                 }
                                             >
                                                 {[...Array(item.countInStock).keys()].map((x) => (
-                                                    <option key={x+1} value={x+1}>{x+1}</option>    
+                                                    <option key={x + 1} value={x + 1}>{x + 1}</option>
                                                 ))}
                                             </select>
                                         </div>
@@ -69,8 +69,8 @@ export default function CartScreen(props) {
                                             ${item.price}
                                         </div>
                                         <div>
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 onClick={() => removeFromCartHandler(item.product)}
                                             >
                                                 Delete
@@ -88,15 +88,15 @@ export default function CartScreen(props) {
                     <ul>
                         <li>
                             <h2>
-                                Subtotal ({cartItems.reduce((a, c) => a + Number(c.qty), 0)} items) : 
+                                Subtotal ({cartItems.reduce((a, c) => a + Number(c.qty), 0)} items) :
                                 ${cartItems.reduce((a, c) => a + c.price * Number(c.qty), 0)}
                             </h2>
                         </li>
                         <li>
-                            <button 
-                                type="button" 
-                                onClick={checkoutHandler} 
-                                className="primary block" 
+                            <button
+                                type="button"
+                                onClick={checkoutHandler}
+                                className="primary block"
                                 disabled={cartItems.length === 0}
                             >
                                 Proceed to Checkout
