@@ -10,7 +10,7 @@ export const userRegisterReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     default:
       return state
-  };
+  }
 };
 
 export const userSigninReducer = (state = {}, action) => {
@@ -25,5 +25,5 @@ export const userSigninReducer = (state = {}, action) => {
       return {};
     default:
       return state
-  };
+  }
 };
