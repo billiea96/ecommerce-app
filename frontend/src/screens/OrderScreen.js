@@ -14,7 +14,11 @@ export default function OrderScreen(props) {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { loading, error, order } = orderDetails;
   const orderPay = useSelector((state) => state.orderPay);
-  const { loading:loadingPay, error: errorPay, success: successPay } = orderPay;
+  const {
+    loading: loadingPay,
+    error: errorPay,
+    success: successPay,
+  } = orderPay;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,20 +30,18 @@ export default function OrderScreen(props) {
       script.async = true;
       script.onload = () => {
         setSdkReady(true);
-      }
+      };
       document.body.appendChild(script);
-      console.log(sdkReady);
-    }
-    if (!order || successPay || (order && order._id !== orderId )) {
+      // console.log(sdkReady);
+    };
+    if (!order || successPay || (order && order._id !== orderId)) {
       dispatch({ type: ORDER_PAY_RESET });
       dispatch(detailsOrder(orderId));
-    }
-    else {
+    } else {
       if (!order.isPaid) {
         if (!window.paypal) {
           addPayPalScript();
-        }
-        else {
+        } else {
           setSdkReady(true);
         }
       }
@@ -66,16 +68,18 @@ export default function OrderScreen(props) {
                 <h2>Shipping</h2>
                 <p>
                   <strong>Name:</strong> {order.shippingAddress.fullName} <br />
-                  <strong>Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}
-                  , {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                  <strong>Address:</strong> {order.shippingAddress.address},{' '}
+                  {order.shippingAddress.city},{' '}
+                  {order.shippingAddress.postalCode},{' '}
+                  {order.shippingAddress.country}
                 </p>
-                {
-                  order.isDelivered ? (
-                    <MessageBox variant="success">Delievered At {order.deliveredAt}</MessageBox>
-                  ) : (
-                    <MessageBox variant="danger">Not Delivered</MessageBox>
-                  )
-                }
+                {order.isDelivered ? (
+                  <MessageBox variant="success">
+                    Delievered At {order.deliveredAt}
+                  </MessageBox>
+                ) : (
+                  <MessageBox variant="danger">Not Delivered</MessageBox>
+                )}
               </div>
             </li>
             <li>
@@ -84,40 +88,40 @@ export default function OrderScreen(props) {
                 <p>
                   <strong>Method:</strong> {order.paymentMethod} <br />
                 </p>
-                {
-                  order.isPaid ? (
-                    <MessageBox variant="success">Paid At {order.paidAt}</MessageBox>
-                  ) : (
-                    <MessageBox variant="danger">Not Paid</MessageBox>
-                  )
-                }
+                {order.isPaid ? (
+                  <MessageBox variant="success">
+                    Paid At {order.paidAt}
+                  </MessageBox>
+                ) : (
+                  <MessageBox variant="danger">Not Paid</MessageBox>
+                )}
               </div>
             </li>
             <li>
               <div className="card card-body">
                 <h2>Order Items</h2>
                 <ul>
-                  {
-                    order.orderItems.map((item) => (
-                      <li key={item.product}>
-                        <div className="row">
-                          <div>
-                            <img
-                              className="small"
-                              src={item.image}
-                              alt={item.name}
-                            />
-                          </div>
-                          <div className="min-30">
-                            <Link to={`/product/${item.product}`}>{item.name}</Link>
-                          </div>
-                          <div>
-                            {item.qty} x ${item.price} = ${item.qty * item.price}
-                          </div>
+                  {order.orderItems.map((item) => (
+                    <li key={item.product}>
+                      <div className="row">
+                        <div>
+                          <img
+                            className="small"
+                            src={item.image}
+                            alt={item.name}
+                          />
                         </div>
-                      </li>
-                    ))
-                  }
+                        <div className="min-30">
+                          <Link to={`/product/${item.product}`}>
+                            {item.name}
+                          </Link>
+                        </div>
+                        <div>
+                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </li>
@@ -149,25 +153,32 @@ export default function OrderScreen(props) {
               </li>
               <li>
                 <div className="row">
-                  <div><strong>Order Total</strong></div>
-                  <div><strong>${order.totalPrice.toFixed(2)}</strong></div>
+                  <div>
+                    <strong>Order Total</strong>
+                  </div>
+                  <div>
+                    <strong>${order.totalPrice.toFixed(2)}</strong>
+                  </div>
                 </div>
               </li>
-              {
-                !order.isPaid && (
-                  <li>
-                    {!sdkReady ? (
-                      <LoadingBox></LoadingBox>
-                    ) : (
-                      <div>
-                      { errorPay && (<MessageBox variant="danger">{errorPay}</MessageBox>) }
-                      { loadingPay && (<LoadingBox></LoadingBox>) }
-                      <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler}></PayPalButton>
-                      </div>
-                    )}
-                  </li>
-                )
-              }
+              {!order.isPaid && (
+                <li>
+                  {!sdkReady ? (
+                    <LoadingBox></LoadingBox>
+                  ) : (
+                    <div>
+                      {errorPay && (
+                        <MessageBox variant="danger">{errorPay}</MessageBox>
+                      )}
+                      {loadingPay && <LoadingBox></LoadingBox>}
+                      <PayPalButton
+                        amount={order.totalPrice}
+                        onSuccess={successPaymentHandler}
+                      ></PayPalButton>
+                    </div>
+                  )}
+                </li>
+              )}
             </ul>
           </div>
         </div>
